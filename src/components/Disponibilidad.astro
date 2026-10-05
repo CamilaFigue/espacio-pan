@@ -1,0 +1,105 @@
+---
+// Calendario de disponibilidad.
+// Las fechas ocupadas salen de src/data/departamento.js.
+// El calendario se dibuja en el navegador del visitante (con JavaScript)
+// para que "hoy" siempre sea el día real en que alguien mira la página.
+import { departamento } from '../data/departamento.js';
+
+const ocupado = departamento.ocupado;
+---
+
+<section id="disponibilidad">
+	<h2>Disponibilidad</h2>
+	<p class="ayuda">
+		Los días en <span class="muestra ocupado"></span> rojo están ocupados.
+		Los días en blanco están libres.
+	</p>
+
+	<div class="controles">
+		<button id="anterior" aria-label="Meses anteriores">‹</button>
+		<button id="siguiente" aria-label="Meses siguientes">›</button>
+	</div>
+	<div id="calendario" class="meses"></div>
+</section>
+
+<!-- define:vars pasa datos de Astro (servidor) al JavaScript del navegador -->
+<script define:vars={{ ocupado }}>
+	const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio',
+		'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+	const DIAS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+
+	// Convierte "2026-10-10" en una fecha local (sin problemas de zona horaria)
+	const aFecha = (txt) => {
+		const [a, m, d] = txt.split('-').map(Number);
+		return new Date(a, m - 1, d);
+	};
+
+	// Un día está ocupado si cae entre "desde" (incluido) y "hasta" (excluido).
+	// "hasta" es el día del check-out, que queda libre para el próximo huésped.
+	const rangos = ocupado.map((r) => [aFecha(r.desde), aFecha(r.hasta)]);
+	const estaOcupado = (fecha) => rangos.some(([desde, hasta]) => fecha >= desde && fecha < hasta);
+
+	const hoy = new Date();
+	hoy.setHours(0, 0, 0, 0);
+	let desplazamiento = 0; // cuántos meses nos movimos con las flechas
+
+	function dibujarMes(anio, mes) {
+		const primero = new Date(anio, mes, 1);
+		const diasEnMes = new Date(anio, mes + 1, 0).getDate();
+		const huecos = (primero.getDay() + 6) % 7; // semana empieza en lunes
+
+		let html = `<div class="mes"><h3>${MESES[mes]} ${anio}</h3><div class="grilla-dias">`;
+		html += DIAS.map((d) => `<span class="cabecera">${d}</span>`).join('');
+		html += '<span></span>'.repeat(huecos);
+		for (let dia = 1; dia <= diasEnMes; dia++) {
+			const fecha = new Date(anio, mes, dia);
+			let clase = 'dia';
+			if (fecha < hoy) clase += ' pasado';
+			else if (estaOcupado(fecha)) clase += ' ocupado';
+			if (fecha.getTime() === hoy.getTime()) clase += ' hoy';
+			html += `<span class="${clase}">${dia}</span>`;
+		}
+		return html + '</div></div>';
+	}
+
+	function dibujar() {
+		const contenedor = document.getElementById('calendario');
+		let html = '';
+		for (let i = 0; i < 3; i++) {
+			const fecha = new Date(hoy.getFullYear(), hoy.getMonth() + desplazamiento + i, 1);
+			html += dibujarMes(fecha.getFullYear(), fecha.getMonth());
+		}
+		contenedor.innerHTML = html;
+		document.getElementById('anterior').disabled = desplazamiento <= 0;
+	}
+
+	document.getElementById('anterior').onclick = () => { desplazamiento -= 3; dibujar(); };
+	document.getElementById('siguiente').onclick = () => { desplazamiento += 3; dibujar(); };
+	dibujar();
+</script>
+
+<style>
+	.ayuda { color: var(--suave); }
+	.muestra { display: inline-block; width: 0.9em; height: 0.9em; border-radius: 3px; vertical-align: middle; }
+	.muestra.ocupado { background: var(--ocupado); }
+	.controles { display: flex; justify-content: flex-end; gap: 0.5rem; margin-bottom: 0.5rem; }
+	.controles button {
+		width: 2.4rem; height: 2.4rem; border-radius: 50%;
+		border: 1px solid var(--borde); background: white; font-size: 1.3rem; cursor: pointer;
+	}
+	.controles button:disabled { opacity: 0.4; cursor: default; }
+	.meses {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		gap: 1.5rem;
+	}
+	/* :global hace falta porque estos elementos los crea el JavaScript */
+	.meses :global(.mes) { background: white; border: 1px solid var(--borde); border-radius: var(--radio); padding: 1rem; }
+	.meses :global(h3) { margin: 0 0 0.6rem; text-align: center; }
+	.meses :global(.grilla-dias) { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+	.meses :global(.cabecera) { font-size: 0.8rem; color: var(--suave); font-weight: 600; }
+	.meses :global(.dia) { padding: 0.35rem 0; border-radius: 6px; font-size: 0.9rem; }
+	.meses :global(.pasado) { color: #c4beb4; }
+	.meses :global(.ocupado) { background: var(--ocupado); color: white; }
+	.meses :global(.hoy) { outline: 2px solid var(--acento); }
+</style>

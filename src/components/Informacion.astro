@@ -1,0 +1,48 @@
+---
+// Información del departamento: descripción, datos rápidos y comodidades.
+import { departamento } from '../data/departamento.js';
+---
+
+<section id="departamento">
+	<h2>El departamento</h2>
+	<p>{departamento.descripcion}</p>
+
+	<div class="datos">
+		{departamento.datos.map((d) => (
+			<div class="dato">
+				<span class="icono">{d.icono}</span>
+				<span>{d.texto}</span>
+			</div>
+		))}
+	</div>
+
+	<h3>Comodidades</h3>
+	<ul class="comodidades">
+		{departamento.comodidades.map((c) => <li>{c}</li>)}
+	</ul>
+</section>
+
+<style>
+	.datos {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+		gap: 1rem;
+		margin: 2rem 0;
+	}
+	.dato {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		padding: 1rem;
+		background: white;
+		border: 1px solid var(--borde);
+		border-radius: var(--radio);
+	}
+	.icono { font-size: 1.5rem; }
+	.comodidades {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+		gap: 0.4rem 1rem;
+		padding-left: 1.2rem;
+	}
+</style>

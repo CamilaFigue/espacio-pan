@@ -1,0 +1,25 @@
+---
+// Contacto: botones para escribir por WhatsApp o email,
+// y enlaces a las publicaciones en Airbnb / Booking si existen.
+import { departamento } from '../data/departamento.js';
+
+const c = departamento.contacto;
+const mensaje = encodeURIComponent(`Hola! Quería consultar por ${departamento.nombre}.`);
+---
+
+<section id="contacto">
+	<h2>Contacto y reservas</h2>
+	<p>¿Querés reservar o tenés alguna pregunta? Escribinos.</p>
+	<div class="botones">
+		{c.whatsapp && <a class="boton" href={`https://wa.me/${c.whatsapp}?text=${mensaje}`} target="_blank">WhatsApp</a>}
+		{c.email && <a class="boton secundario" href={`mailto:${c.email}`}>Email</a>}
+		{c.instagram && <a class="boton secundario" href={c.instagram} target="_blank">Instagram</a>}
+		{c.airbnb && <a class="boton secundario" href={c.airbnb} target="_blank">Ver en Airbnb</a>}
+		{c.booking && <a class="boton secundario" href={c.booking} target="_blank">Ver en Booking</a>}
+	</div>
+</section>
+
+<style>
+	.botones { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.5rem; }
+	.secundario { background: white; color: var(--acento); border: 2px solid var(--acento); }
+</style>

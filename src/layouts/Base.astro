@@ -1,0 +1,36 @@
+---
+// Un "layout" es el molde que comparten todas las páginas:
+// la cabecera <head>, el menú y el pie de página.
+import '../styles/global.css';
+import { departamento } from '../data/departamento.js';
+
+const { titulo = departamento.nombre } = Astro.props;
+const base = import.meta.env.BASE_URL; // ruta base del sitio (ej: /espacio-pan/)
+---
+
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content={departamento.lema} />
+		<link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+		<title>{titulo}</title>
+	</head>
+	<body>
+		<header class="menu">
+			<a href="#inicio" class="marca">{departamento.nombre}</a>
+			<nav>
+				<a href="#departamento">El depto</a>
+				<a href="#fotos">Fotos</a>
+				<a href="#disponibilidad">Disponibilidad</a>
+				<a href="#contacto">Contacto</a>
+			</nav>
+		</header>
+		<main>
+			<slot />
+		</main>
+		<footer>
+			<p>{departamento.nombre} · {departamento.ubicacion}</p>
+		</footer>
+	</body>
+</html>

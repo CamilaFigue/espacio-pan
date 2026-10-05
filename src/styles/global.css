@@ -1,0 +1,69 @@
+/* Estilos generales del sitio.
+   Las "variables" de abajo definen la paleta: cambiando un color acá,
+   cambia en todo el sitio. */
+:root {
+	--fondo: #fbf8f3;
+	--texto: #2b2a28;
+	--suave: #6f6a62;
+	--acento: #c0703a; /* terracota, como las sierras */
+	--acento-claro: #f3e2d4;
+	--borde: #e6dfd4;
+	--ocupado: #d9534f;
+	--radio: 14px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+	margin: 0;
+	font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+	background: var(--fondo);
+	color: var(--texto);
+	line-height: 1.6;
+}
+
+a { color: var(--acento); }
+
+.menu {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem 1.5rem;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.8rem 1rem;
+	background: rgba(251, 248, 243, 0.92);
+	backdrop-filter: blur(6px);
+	border-bottom: 1px solid var(--borde);
+}
+.menu .marca { font-weight: 700; font-size: 1.2rem; text-decoration: none; color: var(--texto); }
+.menu nav { display: flex; flex-wrap: wrap; gap: 1rem; }
+.menu nav a { text-decoration: none; color: var(--suave); }
+.menu nav a:hover { color: var(--acento); }
+
+section {
+	max-width: 1000px;
+	margin: 0 auto;
+	padding: 3.5rem 1rem;
+}
+section h2 { font-size: 1.8rem; margin-top: 0; }
+
+.boton {
+	display: inline-block;
+	padding: 0.75rem 1.4rem;
+	border-radius: 999px;
+	background: var(--acento);
+	color: white;
+	text-decoration: none;
+	font-weight: 600;
+}
+.boton:hover { filter: brightness(1.08); }
+
+footer {
+	text-align: center;
+	padding: 2rem 1rem;
+	color: var(--suave);
+	border-top: 1px solid var(--borde);
+}

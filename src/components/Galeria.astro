@@ -1,0 +1,47 @@
+---
+// Galería de fotos. Las imágenes viven en public/fotos/
+// y se listan en src/data/departamento.js.
+import { departamento } from '../data/departamento.js';
+
+const base = import.meta.env.BASE_URL;
+const fotos = departamento.fotos;
+---
+
+<section id="fotos">
+	<h2>Fotos</h2>
+	{fotos.length === 0 ? (
+		<div class="grilla">
+			{[1, 2, 3, 4, 5, 6].map(() => <div class="foto vacia">Foto próximamente</div>)}
+		</div>
+	) : (
+		<div class="grilla">
+			{fotos.map((f) => (
+				<a href={`${base}fotos/${f.archivo}`} target="_blank">
+					<img class="foto" src={`${base}fotos/${f.archivo}`} alt={f.descripcion} loading="lazy" />
+				</a>
+			))}
+		</div>
+	)}
+</section>
+
+<style>
+	.grilla {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+		gap: 0.8rem;
+	}
+	.foto {
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+		border-radius: var(--radio);
+		display: block;
+	}
+	.vacia {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: var(--acento-claro);
+		color: var(--suave);
+	}
+</style>
