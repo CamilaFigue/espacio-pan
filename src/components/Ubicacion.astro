@@ -1,0 +1,45 @@
+---
+// Ubicación: dirección y un mapa de Google Maps "embebido" (metido dentro de la página).
+import { departamento } from '../data/departamento.js';
+
+const d = departamento.direccion;
+const busqueda = encodeURIComponent(d.busquedaMapa);
+---
+
+<section id="ubicacion">
+	<h2>Ubicación</h2>
+	<div class="columnas">
+		<div>
+			<p class="calle">{d.calle}</p>
+			<p>{d.edificio}</p>
+			<p>{d.ciudad}</p>
+			<p class="referencia">📍 {d.referencia}</p>
+			<a class="boton" href={`https://www.google.com/maps/search/?api=1&query=${busqueda}`} target="_blank">
+				Abrir en Google Maps
+			</a>
+		</div>
+		<iframe
+			title="Mapa de la ubicación"
+			src={`https://maps.google.com/maps?q=${busqueda}&z=16&output=embed`}
+			loading="lazy"
+			referrerpolicy="no-referrer-when-downgrade"></iframe>
+	</div>
+</section>
+
+<style>
+	.columnas {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+		gap: 2rem;
+		align-items: center;
+	}
+	p { margin: 0.2rem 0; }
+	.calle { font-weight: 700; font-size: 1.2rem; }
+	.referencia { margin: 1rem 0 1.5rem; }
+	iframe {
+		width: 100%;
+		height: 320px;
+		border: 0;
+		border-radius: var(--radio);
+	}
+</style>

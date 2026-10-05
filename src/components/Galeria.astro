@@ -1,28 +1,67 @@
 ---
-// Galería de fotos. Las imágenes viven en public/fotos/
+// Galería de fotos. Las imágenes viven en src/assets/fotos/
 // y se listan en src/data/departamento.js.
+// Al tocar una foto se abre en grande (eso lo hace el <script> de abajo).
+import { Image, getImage } from 'astro:assets';
 import { departamento } from '../data/departamento.js';
+import { foto } from '../lib/fotos.js';
 
-const base = import.meta.env.BASE_URL;
-const fotos = departamento.fotos;
+const fotos = await Promise.all(
+	departamento.fotos.map(async (f) => {
+		const src = foto(f.archivo);
+		const grande = await getImage({ src, width: 1600, format: 'webp' });
+		return { ...f, src, grande: grande.src };
+	}),
+);
 ---
 
 <section id="fotos">
 	<h2>Fotos</h2>
-	{fotos.length === 0 ? (
-		<div class="grilla">
-			{[1, 2, 3, 4, 5, 6].map(() => <div class="foto vacia">Foto próximamente</div>)}
-		</div>
-	) : (
-		<div class="grilla">
-			{fotos.map((f) => (
-				<a href={`${base}fotos/${f.archivo}`} target="_blank">
-					<img class="foto" src={`${base}fotos/${f.archivo}`} alt={f.descripcion} loading="lazy" />
-				</a>
-			))}
-		</div>
-	)}
+	<div class="grilla">
+		{fotos.map((f, i) => (
+			<button class="miniatura" data-indice={i} data-grande={f.grande} data-descripcion={f.descripcion}>
+				<Image src={f.src} alt={f.descripcion} width={500} format="webp" />
+			</button>
+		))}
+	</div>
+
+	<!-- <dialog> es una ventana emergente que ya trae el navegador -->
+	<dialog id="visor">
+		<img id="visor-imagen" alt="" />
+		<p id="visor-texto"></p>
+		<button class="cerrar" aria-label="Cerrar">✕</button>
+		<button class="flecha anterior" aria-label="Foto anterior">‹</button>
+		<button class="flecha siguiente" aria-label="Foto siguiente">›</button>
+	</dialog>
 </section>
+
+<script>
+	const visor = document.getElementById('visor');
+	const imagen = document.getElementById('visor-imagen');
+	const texto = document.getElementById('visor-texto');
+	const miniaturas = [...document.querySelectorAll('.miniatura')];
+	let actual = 0;
+
+	function mostrar(indice) {
+		actual = (indice + miniaturas.length) % miniaturas.length; // da la vuelta al llegar al final
+		const m = miniaturas[actual];
+		imagen.src = m.dataset.grande;
+		imagen.alt = m.dataset.descripcion;
+		texto.textContent = m.dataset.descripcion;
+	}
+
+	miniaturas.forEach((m, i) => m.addEventListener('click', () => { mostrar(i); visor.showModal(); }));
+	visor.querySelector('.cerrar').onclick = () => visor.close();
+	visor.querySelector('.anterior').onclick = () => mostrar(actual - 1);
+	visor.querySelector('.siguiente').onclick = () => mostrar(actual + 1);
+	// Cerrar tocando afuera de la foto, y moverse con las flechas del teclado
+	visor.addEventListener('click', (e) => { if (e.target === visor) visor.close(); });
+	document.addEventListener('keydown', (e) => {
+		if (!visor.open) return;
+		if (e.key === 'ArrowLeft') mostrar(actual - 1);
+		if (e.key === 'ArrowRight') mostrar(actual + 1);
+	});
+</script>
 
 <style>
 	.grilla {
@@ -30,18 +69,53 @@ const fotos = departamento.fotos;
 		grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
 		gap: 0.8rem;
 	}
-	.foto {
+	.miniatura {
+		padding: 0;
+		border: none;
+		background: none;
+		cursor: zoom-in;
+		border-radius: var(--radio);
+		overflow: hidden;
+	}
+	.miniatura img {
 		width: 100%;
+		height: auto;
 		aspect-ratio: 4 / 3;
 		object-fit: cover;
-		border-radius: var(--radio);
 		display: block;
+		transition: transform 0.3s;
 	}
-	.vacia {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background: var(--acento-claro);
-		color: var(--suave);
+	.miniatura:hover img { transform: scale(1.04); }
+
+	#visor {
+		border: none;
+		padding: 0;
+		background: transparent;
+		max-width: 95vw;
+		max-height: 95vh;
+		overflow: visible;
 	}
+	#visor::backdrop { background: rgba(0, 0, 0, 0.85); }
+	#visor img {
+		max-width: 95vw;
+		max-height: 85vh;
+		display: block;
+		border-radius: 8px;
+	}
+	#visor p { color: white; text-align: center; margin: 0.6rem 0 0; }
+	#visor button {
+		position: fixed;
+		border: none;
+		background: rgba(255, 255, 255, 0.15);
+		color: white;
+		font-size: 1.8rem;
+		width: 3rem;
+		height: 3rem;
+		border-radius: 50%;
+		cursor: pointer;
+	}
+	#visor button:hover { background: rgba(255, 255, 255, 0.3); }
+	.cerrar { top: 1rem; right: 1rem; font-size: 1.3rem !important; }
+	.anterior { left: 1rem; top: 50%; transform: translateY(-50%); }
+	.siguiente { right: 1rem; top: 50%; transform: translateY(-50%); }
 </style>

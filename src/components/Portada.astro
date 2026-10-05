@@ -1,26 +1,43 @@
 ---
-// Portada: lo primero que ve el visitante.
+// Portada: lo primero que ve el visitante, con una foto de fondo.
+import { getImage } from 'astro:assets';
 import { departamento } from '../data/departamento.js';
+import { foto } from '../lib/fotos.js';
+
+// getImage genera una versión optimizada de la foto (más liviana que la original)
+const fondo = await getImage({ src: foto(departamento.fotoPortada), width: 1920, format: 'webp' });
 ---
 
-<div class="portada" id="inicio">
-	<h1>{departamento.nombre}</h1>
-	<p class="lema">{departamento.lema}</p>
-	<a class="boton" href="#disponibilidad">Ver disponibilidad</a>
+<div class="portada" id="inicio" style={`background-image: url(${fondo.src})`}>
+	<div class="contenido">
+		<h1>{departamento.nombre}</h1>
+		<p class="lema">{departamento.lema}</p>
+		<a class="boton" href="#disponibilidad">Ver disponibilidad</a>
+	</div>
 </div>
 
 <style>
 	/* Los estilos dentro de un componente solo afectan a ese componente. */
 	.portada {
-		min-height: 70vh;
+		min-height: 80vh;
 		display: flex;
-		flex-direction: column;
-		justify-content: center;
 		align-items: center;
+		justify-content: center;
 		text-align: center;
 		padding: 2rem 1rem;
-		background: linear-gradient(160deg, var(--acento-claro), var(--fondo));
+		background-size: cover;
+		background-position: center 60%;
+		position: relative;
+		color: white;
 	}
-	h1 { font-size: clamp(2.5rem, 8vw, 4.5rem); margin: 0; }
-	.lema { font-size: 1.25rem; color: var(--suave); margin: 0.5rem 0 2rem; }
+	/* Capa oscura sobre la foto para que el texto se lea bien */
+	.portada::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(180deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.45));
+	}
+	.contenido { position: relative; }
+	h1 { font-size: clamp(2.8rem, 9vw, 5rem); margin: 0; text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35); }
+	.lema { font-size: 1.3rem; margin: 0.5rem 0 2rem; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4); }
 </style>

@@ -47,6 +47,7 @@ section {
 	max-width: 1000px;
 	margin: 0 auto;
 	padding: 3.5rem 1rem;
+	scroll-margin-top: 3rem; /* para que el menú fijo no tape el título */
 }
 section h2 { font-size: 1.8rem; margin-top: 0; }
 

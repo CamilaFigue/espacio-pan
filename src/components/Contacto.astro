@@ -5,11 +5,13 @@ import { departamento } from '../data/departamento.js';
 
 const c = departamento.contacto;
 const mensaje = encodeURIComponent(`Hola! Quería consultar por ${departamento.nombre}.`);
+const hayContacto = Object.values(c).some((valor) => valor !== '');
 ---
 
 <section id="contacto">
 	<h2>Contacto y reservas</h2>
 	<p>¿Querés reservar o tenés alguna pregunta? Escribinos.</p>
+	{!hayContacto && <p class="pronto">Muy pronto vas a encontrar acá nuestros datos de contacto.</p>}
 	<div class="botones">
 		{c.whatsapp && <a class="boton" href={`https://wa.me/${c.whatsapp}?text=${mensaje}`} target="_blank">WhatsApp</a>}
 		{c.email && <a class="boton secundario" href={`mailto:${c.email}`}>Email</a>}

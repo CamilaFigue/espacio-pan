@@ -19,5 +19,5 @@ npm run dev     # abre el sitio en http://localhost:4321/espacio-pan
 | `src/components/` | Cada sección del sitio (portada, info, fotos, calendario, contacto) |
 | `src/layouts/Base.astro` | El molde común: menú y pie de página |
 | `src/styles/global.css` | Colores y estilos generales |
-| `public/fotos/` | Las fotos del departamento |
+| `src/assets/fotos/` | Las fotos del departamento (Astro las optimiza solo) |
 | `.github/workflows/deploy.yml` | Publica el sitio solo cada vez que se suben cambios |

@@ -1,11 +1,11 @@
 ---
-// Información del departamento: descripción, datos rápidos y comodidades.
+// Información del departamento: descripción, datos rápidos, comodidades y aclaraciones.
 import { departamento } from '../data/departamento.js';
 ---
 
 <section id="departamento">
 	<h2>El departamento</h2>
-	<p>{departamento.descripcion}</p>
+	{departamento.descripcion.map((parrafo) => <p>{parrafo}</p>)}
 
 	<div class="datos">
 		{departamento.datos.map((d) => (
@@ -17,15 +17,29 @@ import { departamento } from '../data/departamento.js';
 	</div>
 
 	<h3>Comodidades</h3>
-	<ul class="comodidades">
-		{departamento.comodidades.map((c) => <li>{c}</li>)}
-	</ul>
+	<div class="grupos">
+		{departamento.comodidades.map((g) => (
+			<div class="grupo">
+				<h4>{g.grupo}</h4>
+				<ul>
+					{g.items.map((item) => <li>{item}</li>)}
+				</ul>
+			</div>
+		))}
+	</div>
+
+	<div class="aviso">
+		<h4>A tener en cuenta</h4>
+		<ul>
+			{departamento.aTenerEnCuenta.map((a) => <li>{a}</li>)}
+		</ul>
+	</div>
 </section>
 
 <style>
 	.datos {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
 		gap: 1rem;
 		margin: 2rem 0;
 	}
@@ -39,10 +53,17 @@ import { departamento } from '../data/departamento.js';
 		border-radius: var(--radio);
 	}
 	.icono { font-size: 1.5rem; }
-	.comodidades {
+	.grupos {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-		gap: 0.4rem 1rem;
-		padding-left: 1.2rem;
+		grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+		gap: 1rem 2rem;
+	}
+	h4 { margin: 0.5rem 0; color: var(--acento); }
+	ul { margin: 0; padding-left: 1.2rem; }
+	.aviso {
+		margin-top: 2rem;
+		padding: 1rem 1.4rem;
+		background: var(--acento-claro);
+		border-radius: var(--radio);
 	}
 </style>
