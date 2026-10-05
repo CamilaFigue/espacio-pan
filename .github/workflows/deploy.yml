@@ -24,6 +24,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Construir el sitio con Astro
         uses: withastro/action@v3
+        with:
+          node-version: 24 # la misma versión de Node que tenés en tu compu
 
   deploy:
     needs: build
