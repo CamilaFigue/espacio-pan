@@ -6,6 +6,10 @@ on:
   push:
     branches: [main]
   workflow_dispatch: # permite publicarlo a mano desde la pestaña Actions
+  schedule:
+    # Cada 3 horas vuelve a publicar el sitio para traer las reservas nuevas
+    # de Airbnb y Booking (la hora es UTC, 3 horas más que en Argentina)
+    - cron: '0 */3 * * *'
 
 permissions:
   contents: read
@@ -22,6 +26,12 @@ jobs:
     steps:
       - name: Descargar el código
         uses: actions/checkout@v4
+      - name: Traer las fechas ocupadas de Airbnb y Booking
+        run: node scripts/sincronizar-calendarios.mjs
+        env:
+          # Los links privados de los calendarios se guardan como secretos del repo
+          AIRBNB_ICAL: ${{ secrets.AIRBNB_ICAL }}
+          BOOKING_ICAL: ${{ secrets.BOOKING_ICAL }}
       - name: Construir el sitio con Astro
         uses: withastro/action@v3
         with:
