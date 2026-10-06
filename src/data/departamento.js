@@ -84,8 +84,18 @@ export const departamento = {
     busquedaMapa: 'Moreno 40, Villa Carlos Paz, Córdoba, Argentina',
   },
 
-  // Fechas ocupadas (formato AAAA-MM-DD). Más adelante esto se va a llenar
-  // solo, leyendo los calendarios de Airbnb y Booking.
+  // Precio por noche en pesos (se muestra en cada día libre del calendario)
+  precioPorNoche: 90000,
+
+  // Mínimo de noches para poder consultar
+  minimoNoches: 1,
+
+  // Máximo de huéspedes (para el selector del calendario)
+  maximoHuespedes: 4,
+
+  // Las reservas de Airbnb y Booking se cargan solas (ver scripts/sincronizar-calendarios.mjs).
+  // Acá podés bloquear fechas a mano, por ejemplo una reserva directa:
+  // { desde: '2026-12-24', hasta: '2026-12-27' }  ("hasta" es el día de salida, queda libre)
   ocupado: [],
 
   // Dejá vacío ('') lo que no quieras mostrar
