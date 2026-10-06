@@ -90,10 +90,10 @@ export const departamento = {
 
   // Dejá vacío ('') lo que no quieras mostrar
   contacto: {
-    whatsapp: '', // número con código de país, sin + ni espacios. Ej: 5493511234567
-    email: '',
-    instagram: '',
-    airbnb: '',
-    booking: '',
+    whatsapp: '5493413080169', // número con código de país, sin + ni espacios. Ej: 5493511234567
+    email: 'espaciopan2025@gmail.com',
+    instagram: 'espaciopan.vcp', // tu usuario de Instagram (o el link completo)
+    airbnb: 'https://www.airbnb.com.ar/rooms/1441218163171652747?guests=1&adults=1&s=67&unique_share_id=db8a7340-e36c-4804-8f22-70c7d7f9e1c1',
+    booking: 'https://www.booking.com/Share-h6UqZb',
   },
 };

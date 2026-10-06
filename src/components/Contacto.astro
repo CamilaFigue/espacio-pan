@@ -5,6 +5,10 @@ import { departamento } from '../data/departamento.js';
 
 const c = departamento.contacto;
 const mensaje = encodeURIComponent(`Hola! Quería consultar por ${departamento.nombre}.`);
+// Instagram acepta el usuario solo (ej: espaciopan.vcp) o el link completo
+const instagram = c.instagram.startsWith('http')
+	? c.instagram
+	: `https://www.instagram.com/${c.instagram.replace('@', '')}`;
 const hayContacto = Object.values(c).some((valor) => valor !== '');
 ---
 
@@ -15,7 +19,7 @@ const hayContacto = Object.values(c).some((valor) => valor !== '');
 	<div class="botones">
 		{c.whatsapp && <a class="boton" href={`https://wa.me/${c.whatsapp}?text=${mensaje}`} target="_blank">WhatsApp</a>}
 		{c.email && <a class="boton secundario" href={`mailto:${c.email}`}>Email</a>}
-		{c.instagram && <a class="boton secundario" href={c.instagram} target="_blank">Instagram</a>}
+		{c.instagram && <a class="boton secundario" href={instagram} target="_blank">Instagram</a>}
 		{c.airbnb && <a class="boton secundario" href={c.airbnb} target="_blank">Ver en Airbnb</a>}
 		{c.booking && <a class="boton secundario" href={c.booking} target="_blank">Ver en Booking</a>}
 	</div>
